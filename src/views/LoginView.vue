@@ -1,12 +1,12 @@
 <template>
   <v-form lazy-validation ref="form" v-model="valida">
-    <v-card align="center" class="elevation-12">
-      <v-toolbar dark color="green darken-3">
-        <v-toolbar-title>Login</v-toolbar-title>
+    <v-card align="center" class="elevation-12 contenedor">
+      <v-toolbar dark color="orange lighten-1">
+        <v-toolbar-title class="colorTexto">Login</v-toolbar-title>
         <v-spacer></v-spacer>
-        <v-tooltip left color="blue-grey lighten-1">Registrese
+        <v-tooltip left color="blue darken-1">¡Regístrese!
           <template v-slot:activator="{ on }">
-            <span v-on="on"><v-icon light size="40">account_circle</v-icon></span>
+            <router-link to="signup"><v-icon light size="40" v-on="on">account_circle</v-icon></router-link>
           </template>
         </v-tooltip>
       </v-toolbar>
@@ -24,7 +24,7 @@
           prepend-icon="lock"
           v-model="contrasenia"
           :type="mostrar? 'text' : 'password'"
-          :append-icon="mostrar? 'visibility' : 'visibility_off'"
+          :append-icon="mostrar? 'mdi-eye' : 'mdi-eye-off'"
           @click:append="mostrar = !mostrar"
           label="Contraseña"
           hint="Al menos 8 caracteres"
@@ -32,16 +32,15 @@
           :counter="16"
           ></v-text-field>
           <v-btn
-          text-color="white"
-          class="mr-4"
+          class="mr-4 colorTexto"
           @click="submit"
-          color="green darken-3"
+          color="orange lighten-1"
           >
           Iniciar
           </v-btn>
           <v-btn 
           @click="clear"
-          color="green darken-3">
+          color="orange lighten-1">
           Limpiar
           </v-btn>
         </v-card-text>
@@ -60,7 +59,7 @@
         </v-btn>
       </template>
       </v-snackbar>
-    </v-card> 
+    </v-card>
   </v-form>
 </template>
 
@@ -72,8 +71,6 @@ export default{
 
   computed:{
     ...mapState(['datos','errores'])
-  },
-  created(){
   },
 
   data(){
@@ -102,23 +99,26 @@ export default{
   },
 
   methods:{
-    ...mapMutations(['setUsuario']),
-    ...mapActions(['getDatos', 'iniciarSesion']),
+    ...mapMutations(['setUsuario','vaciarErrores']),
+    ...mapActions(['iniciarSesion','clearErrores']),
 
     async submit () {
+      this.clearErrores()
       this.$refs.form.validate()  //########################### BOTON INGRESAR
       if(this.valida){
         await this.iniciarSesion({username: this.email, password: this.contrasenia})
-        if(this.errores){
-          if(this.errores.response.status === 404){
+        console.log(this.errores)
+        if(this.errores.length != 0){
+          if(this.errores.response.status == 404){
             console.log('Usuario incorrecto')
-            this.errores.message = 'Usuario incorrecto'
+            this.errores.message = 'Usuario incorrecto, verifique su e-mail'
           }
-          if(this.errores.response.status === 400){
+          if(this.errores.response.status == 400){
             console.log('Error en contraseña')
-            this.errores.message = 'Error en contraseña'
+            this.errores.message = 'Verifique su contraseña, ha ingresado un dato incorrecto'
           }
           this.snackbar = true
+          console.log('Snackbar')
         }
       }
     },
@@ -127,6 +127,15 @@ export default{
           this.contrasenia = ''
           this.email = ''
       },
-  }
+  },
 }
 </script>
+
+<style scoped>
+.contenedor{
+  margin-top: 34%;
+}
+.colorTexto{
+  color: Black;
+}
+</style>

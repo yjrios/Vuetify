@@ -10,6 +10,7 @@ export default new Vuex.Store({
     datos:[],
     errores:[],
   },
+
   getters: { 
   },
 
@@ -27,9 +28,14 @@ export default new Vuex.Store({
     },
     cargarErrores(state, errores){
       state.errores = errores
+    },
+    vaciarErrores(state){
+      state.errores = []
     }
   },
+
   actions: {
+
     async getDatos({commit}){
       try {
         await axios.get(process.env.VUE_APP_BASE_URL)
@@ -45,13 +51,14 @@ export default new Vuex.Store({
       }
     },
 
-     async iniciarSesion({commit}, payload){
+    async iniciarSesion({commit}, payload){
        try {
         //  yeison.jesus@gmail.com
         // danijosa@gmail.com
           await axios.post(process.env.VUE_APP_BASE_URL+'login', payload)
           .then(res => {
             if(res.status == 200){
+              console.log(res.data.info)
               commit('setUsuario', res.data.info)
             }
           })
@@ -62,9 +69,30 @@ export default new Vuex.Store({
           )
        } catch (error) {
         console.log(error)
+        commit('cargarErrores', error)
       }
-     }
+    },
+
+    clearErrores({commit}){
+      commit('vaciarErrores')
+    },
+
+    async registrar({commit}, payload){
+      try {
+        await axios.post(process.env.VUE_APP_BASE_URL+'usernuevo', payload)
+        .then(res =>{
+          commit('setUsuario', res.data.info)
+        })
+        .catch(error => {
+          commit('cargarErrores', error)
+        })
+      } catch (error) {
+        console.log(error)
+        commit('cargarErrores', error)
+      }
+    }
   },
+
   modules: {
   }
 })
