@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import axios from 'axios'
 import Vuex from 'vuex'
+import decode from 'jwt-decode'
 
 Vue.use(Vuex)
 
@@ -9,6 +10,9 @@ export default new Vuex.Store({
     loading:[],
     datos:[],
     errores:[],
+    token: '',
+    usuarios: [],
+    registro: [],
   },
 
   getters: { 
@@ -23,25 +27,39 @@ export default new Vuex.Store({
     missingLoanding(state){
       state.loading.estado = false
     },
-    setUsuario(state, datos){
-      state.datos = datos
+    loginUsuario(state, payload){
+      if(payload != ''){
+        localStorage.setItem('token', payload)
+        state.datos = decode(payload)
+      }
     },
-    cargarErrores(state, errores){
-      state.errores = errores
+    altaExitosa(state, payload){
+      if(payload != ''){
+        state.registro = payload
+      }
+    },
+    getUsuarios(state, payload){
+      state.usuarios = payload
+    },
+    cargarErrores(state, error){
+      state.errores = error
     },
     vaciarErrores(state){
       state.errores = []
-    }
+    },
+    editarUsuario(state, usuario){
+      state.registro = []
+      state.registro = usuario
+    },
   },
-
+ 
   actions: {
 
     async getDatos({commit}){
       try {
         await axios.get(process.env.VUE_APP_BASE_URL)
         .then(res => {
-          // const respuesta = res.data
-          commit('setUsuario', res.data.data)
+          commit('getUsuarios', res.data.data)
         })
         .catch(error =>{
           console.log('Error' + error)
@@ -58,30 +76,28 @@ export default new Vuex.Store({
           await axios.post(process.env.VUE_APP_BASE_URL+'login', payload)
           .then(res => {
             if(res.status == 200){
-              console.log(res.data.info)
-              commit('setUsuario', res.data.info)
+              console.log(res)
+              commit('loginUsuario', res.data.token)
             }
           })
          .catch(error =>{
-            console.log(error)
             commit('cargarErrores', error)
             }
           )
        } catch (error) {
-        console.log(error)
         commit('cargarErrores', error)
       }
     },
 
-    clearErrores({commit}){
-      commit('vaciarErrores')
+   async clearErrores({commit}){
+     await commit('vaciarErrores')
     },
 
     async registrar({commit}, payload){
       try {
         await axios.post(process.env.VUE_APP_BASE_URL+'usernuevo', payload)
         .then(res =>{
-          commit('setUsuario', res.data.info)
+          commit('altaExitosa', res.data.info)
         })
         .catch(error => {
           commit('cargarErrores', error)

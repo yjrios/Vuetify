@@ -1,14 +1,10 @@
 <template>
-  <v-form lazy-validation ref="form" v-model="valida">
+  <v-form lazy-validation ref="form" v-model="valida" @submit.prevent="submit">
     <v-card align="center" class="elevation-12 contenedor">
       <v-toolbar dark color="orange lighten-1">
         <v-toolbar-title class="colorTexto">Login</v-toolbar-title>
         <v-spacer></v-spacer>
-        <v-tooltip left color="blue darken-1">¡Regístrese!
-          <template v-slot:activator="{ on }">
-            <router-link to="signup"><v-icon light size="40" v-on="on">account_circle</v-icon></router-link>
-          </template>
-        </v-tooltip>
+            <v-btn icon color="black" ><v-icon size="40" >account_circle</v-icon></v-btn>
       </v-toolbar>
       <v-card-text>
           <v-text-field
@@ -35,6 +31,7 @@
           class="mr-4 colorTexto"
           @click="submit"
           color="orange lighten-1"
+          @keyup.enter="submit"
           >
           Iniciar
           </v-btn>
@@ -66,6 +63,7 @@
 <script>
 import { mapActions, mapMutations, mapState } from 'vuex'
 
+
 export default{
     name: 'LoginView',
 
@@ -81,7 +79,7 @@ export default{
       mode: '',
       timeout: 6000,
       valida: false,
-      email: '',
+      email: 'yeison.jesus@gmail.com',
       contrasenia: '',
       mostrar:false,
       emailRules:[
@@ -97,28 +95,20 @@ export default{
       ],
     }
   },
-
+ 
   methods:{
     ...mapMutations(['setUsuario','vaciarErrores']),
     ...mapActions(['iniciarSesion','clearErrores']),
 
     async submit () {
-      this.clearErrores()
+      this.clearErrores()         //########################### Limpio Erroress
       this.$refs.form.validate()  //########################### BOTON INGRESAR
       if(this.valida){
         await this.iniciarSesion({username: this.email, password: this.contrasenia})
-        console.log(this.errores)
-        if(this.errores.length != 0){
-          if(this.errores.response.status == 404){
-            console.log('Usuario incorrecto')
-            this.errores.message = 'Usuario incorrecto, verifique su e-mail'
-          }
-          if(this.errores.response.status == 400){
-            console.log('Error en contraseña')
-            this.errores.message = 'Verifique su contraseña, ha ingresado un dato incorrecto'
-          }
+        if(this.errores.length == 0){
+          this.$router.push('/dash')
+        }else{
           this.snackbar = true
-          console.log('Snackbar')
         }
       }
     },

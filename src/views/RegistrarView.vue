@@ -3,13 +3,22 @@
           ref="form"
           v-model="validar"
           lazy-validation
-        >
+        > 
           <v-text-field
             prepend-icon="person"
-            v-model="usuario"
+            v-model="nombre"
             :counter="10"
             :rules="usuarioRules"
-            label="Nombres y Apellidos"
+            label="Nombres"
+            required
+          ></v-text-field>
+
+          <v-text-field
+            prepend-icon="person"
+            v-model="apellidos"
+            :counter="10"
+            :rules="usuarioRules"
+            label="Apellidos"
             required
           ></v-text-field>
 
@@ -62,6 +71,12 @@
           :counter="30"
           required
         ></v-text-field>
+
+        <v-select
+          :items="items"
+          label="Nivel"
+          outlined
+        ></v-select>
           
             <v-btn
               color="success"
@@ -88,10 +103,12 @@ export default {
     
 data() {
     return {
+    items: ['ADMIN', 'GUEST'],
     custom: false,
     validar: false,
     mostrar: false,
-    usuario: '',
+    nombres: '',
+    apellidos: '',
     contrasenia: '',
     confirmContrasenia: '',
     mostrarconfirmacion: false,
@@ -110,12 +127,13 @@ data() {
           //v => /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])([A-Za-z\d$@$!%*?&]|[^ ]){8,16}$/.test(v) || 'La contraseña es inválida',
           v => /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,16}$/.test(v) || 'La contraseña es inválida',
       ],
-      confirmContraseniaRules:[
-          v => !!v || 'La contraseña es requerida',
-          v => (v && v.length >= 8) || 'La contraseña debe tener un mínimo de 8 caracteres',
-          //v => /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])([A-Za-z\d$@$!%*?&]|[^ ]){8,16}$/.test(v) || 'La contraseña es inválida',
-          v => /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,16}$/.test(v) || 'La contraseña es inválida',
-      ],
+    confirmContraseniaRules:[
+        v => !!v || 'La contraseña es requerida',
+        v => (v && v.length >= 8) || 'La contraseña debe tener un mínimo de 8 caracteres',
+        //v => /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])([A-Za-z\d$@$!%*?&]|[^ ]){8,16}$/.test(v) || 'La contraseña es inválida',
+        v => /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,16}$/.test(v) || 'La contraseña es inválida',
+        v => ( v =  contrasenia) || 'Las contraseñas no coinciden'
+    ],
     }
   },
   methods: {
