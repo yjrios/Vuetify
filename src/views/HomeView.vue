@@ -1,10 +1,17 @@
 <template>
   <v-container fluid class="background">
-    <v-layout justify-center>
-      <v-flex align-auto cols6 sm12 md6 lg6 xl6 :wrap="true">
-          <login />
-      </v-flex>
-    </v-layout>
+    <v-expand-x-transition>
+      <v-card color="transparent" min-height="15%">
+        <v-card-text class="text-right pt-10 pr-10 font-weight-black font-italic text-md-end text-lg-right">
+          <span class="text-h4 white--text">Panel Gerencial</span>
+        </v-card-text>
+      </v-card>
+      </v-expand-x-transition>
+      <v-layout justify-center>
+        <v-flex align-auto cols6 sm12 md6 lg6 xl6 :wrap="true">
+            <login />
+        </v-flex>
+      </v-layout>
   </v-container>
 </template>
 
@@ -17,6 +24,11 @@ import login from './LoginView.vue'
     components:{
       login
     },
+    data (){
+      return {
+        show: true
+      }
+    }
   }
 </script>
 

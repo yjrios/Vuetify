@@ -4,15 +4,25 @@
 
 <template>
   <v-app>
-    <v-main>
+    <v-main class="colorfondo">
         <router-view/>
     </v-main>
   </v-app>
 </template>
 
 <script>
+import {mapActions} from 'vuex'
+
 export default {
   name: 'App',
-
+  methods: {
+    ...mapActions(['cerrarSesion'])
+  }
 };
 </script>
+
+<style scoped>
+.colorfondo{
+  background-color: #E0F7FA;
+}
+</style>

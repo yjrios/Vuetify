@@ -2,20 +2,20 @@ import Vue from 'vue'
 import axios from 'axios'
 import Vuex from 'vuex'
 import decode from 'jwt-decode'
+import router from '@/router'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
     loading:[],
-    datos:[],
+    datos:'',
     errores:[],
-    token: '',
     usuarios: [],
     registro: [],
-  },
-
-  getters: { 
+    token: '',
+    address: 'img/',
+    autorizado: false
   },
 
   mutations: {
@@ -31,6 +31,9 @@ export default new Vuex.Store({
       if(payload != ''){
         localStorage.setItem('token', payload)
         state.datos = decode(payload)
+      }else{
+        state.datos = []
+        state.autorizado = false
       }
     },
     altaExitosa(state, payload){
@@ -47,22 +50,43 @@ export default new Vuex.Store({
     vaciarErrores(state){
       state.errores = []
     },
-    editarUsuario(state, usuario){
-      state.registro = []
+    usuarioaModificar(state, usuario){
       state.registro = usuario
     },
+    limpiarRegistro(state){
+      state.registro = []
+    },
+    async verificar(state) {
+      try {
+        const config = { headers: { token: localStorage.getItem('token') } }
+        await axios.get(process.env.VUE_APP_BASE_URL+'verify', config)
+        .then(resp => {
+          if (resp.status == 200){
+            state.autorizado = true
+          }
+        })
+        .catch(err => {
+          if (err.status == 401){
+            console.log('NO ESÁ AUTORIZADO')
+            state.autorizado = false
+          }
+        })
+      } catch (error) {
+        console.log(error)
+      }
+    }
   },
  
   actions: {
 
-    async getDatos({commit}){
+    async getDatos({commit}, config){
       try {
-        await axios.get(process.env.VUE_APP_BASE_URL)
+        await axios.get(process.env.VUE_APP_BASE_URL, config)
         .then(res => {
           commit('getUsuarios', res.data.data)
         })
         .catch(error =>{
-          console.log('Error' + error)
+          commit('cargarErrores', error)
         })
       } catch (error) {
         console.log(error)
@@ -71,12 +95,9 @@ export default new Vuex.Store({
 
     async iniciarSesion({commit}, payload){
        try {
-        //  yeison.jesus@gmail.com
-        // danijosa@gmail.com
           await axios.post(process.env.VUE_APP_BASE_URL+'login', payload)
           .then(res => {
             if(res.status == 200){
-              console.log(res)
               commit('loginUsuario', res.data.token)
             }
           })
@@ -89,15 +110,21 @@ export default new Vuex.Store({
       }
     },
 
+    cerrarSesion({commit}){
+      commit('loginUsuario', '')
+      localStorage.removeItem('token')
+      router.push({name: 'homeview'})
+    },
+
    async clearErrores({commit}){
      await commit('vaciarErrores')
     },
 
-    async registrar({commit}, payload){
+    async registrar({commit}, formData){
       try {
-        await axios.post(process.env.VUE_APP_BASE_URL+'usernuevo', payload)
+        await axios.post(process.env.VUE_APP_BASE_URL+'usernuevo', formData)
         .then(res =>{
-          commit('altaExitosa', res.data.info)
+          console.log(res)
         })
         .catch(error => {
           commit('cargarErrores', error)
@@ -106,9 +133,28 @@ export default new Vuex.Store({
         console.log(error)
         commit('cargarErrores', error)
       }
+    },
+
+    editarUsuario( {commit} , usuario){
+      if(usuario) {
+        commit('usuarioaModificar', usuario)
+      }
+    },
+
+    async enviarPutUsuario( {commit}, formData){
+      try {
+        await axios.put(process.env.VUE_APP_BASE_URL+'user/'+formData.append.username, formData)
+        .then(resp => {
+
+            if(resp.data.mensaje){
+              console.lod(Object(resp.data))
+              let error = {message:resp.data.mensaje, statuscode: resp.data.status}
+              commit('cargarErrores', error)
+            }
+        })
+      } catch (error) {
+        console.log('ERROR '+error)        
+      }
     }
   },
-
-  modules: {
-  }
 })

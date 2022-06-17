@@ -1,7 +1,7 @@
 <template>
-<v-container>
-    <v-layout :wrap="true">   
-        <v-flex xs="12" md="5" lg5 offset-sm="1">
+<v-container v-if="autorizado" fluid>
+    <v-layout :wrap="true" align-center justify-center>   
+        <v-flex xs12 sm12 md5 lg5 offset-sm="1" class="mb-2">
             <v-card>
                 <v-menu
                     v-model="menu2"
@@ -20,6 +20,7 @@
                             v-bind="attrs"
                             v-on="on"
                             clearable
+                            height="75"
                         ></v-text-field>
                     </template>
 
@@ -36,41 +37,54 @@
                 </v-menu>
             </v-card>
         </v-flex>
-        <v-spacer></v-spacer>
+        <v-divider light :vertical="true" class="mx-12"></v-divider>
         <!-- #################################### VALOR EURO-BSD / USD-BSD #################################-->
-        <v-flex xs="12" md="5" lg6 offset-sm="1"> 
-            <v-card color="#385F73" dark>
-                <v-layout class="mb-6" justify="center" no-gutters>
-                    <v-flex md="11" lg6>
+        <v-flex xs12 sm12 md5 lg5 offset-sm="1"> 
+            <v-card color="#385F73" dark style="background-color:green">
+                <v-layout class="mb-2" justify="center" no-gutters>
+                    <v-flex md="11" xs="6" lg6 class="pa-1">
                         <v-card-text class="text-center">
                         {{fechaf}} Euro BVC {{euro}} 
                         </v-card-text>
+                        <v-img
+                        class="mx-auto"
+                        src="../assets/euro.png"
+                        max-height="30"
+                        max-width="30"
+                        ></v-img>
                     </v-flex>
-                    <v-flex md="1" class="pa-1" tile outlined style="background-color:green">
+                    <v-divider vertical></v-divider>
+                    <v-flex md="1" xs="6" class="pa-1">
                         <v-card-text
                         class="text-center" 
                         max-height="20"
                         >
-                            {{fechaf}} Dolar BVC {{dolar}} 
+                        {{fechaf}} Dolar BVC {{dolar}} 
                         </v-card-text>
                         <v-img
+                        class="mx-auto"
                         src="../assets/venezuela.png"
-                        max-height="30"
-                        max-width="30"
-                        >
-                        </v-img>
+                        max-height="30px"
+                        max-width="30px"
+                        ></v-img>
                     </v-flex>
                 </v-layout>
             </v-card>  
         </v-flex>
         <!-- #################################### VALOR EURO-BSD / USD-BSD #################################-->
     </v-layout>
-    <v-layout :wrap="true">
+    <v-layout :wrap="true" align-center justify-center>
         <!-- #################################### GRAFICA DOLARES #################################-->
-        <v-flex xs="12" sm="4" lg5 offset-sm="1">
+        <v-flex xs12 sm12 md5 lg5 class="mt-6" offset-sm="1" max-height="5" justify="space-around">
             <v-card color="#385F73" dark>
-                <v-card-text class="text-center" >
+                <v-card-text class="text-center mb-0 pb-0">
                   USD - VES {{dolar}}
+                </v-card-text>
+                <v-card-text class="text-center mt-mb-0 pt-0 pb-2">
+                <v-icon
+                light
+                class="text-h4 black--text"
+                >mdi-currency-usd</v-icon>
                 </v-card-text>
             </v-card>
             <LineChart 
@@ -79,32 +93,18 @@
             </LineChart> 
         </v-flex>
         <!-- #################################### GRAFICA DOLARES #################################-->
-    <!-- </v-layout> -->
-        <v-spacer></v-spacer>
-    <!--<v-layout :wrap="true" no-gutters> 
-        
-         <v-col xs="12" sm="6" >
-            <v-card color="#385F73" dark>
-                <v-card-text class="text-center" >
-                   {{fechaf}} Dolar BVC {{dolar}}
-                </v-card-text>
-            </v-card> 
-        </v-col>
-        <v-divider class="mx-0" vertical></v-divider>
-         <v-flex xs="12" sm="6">
-            <v-card color="#385F73" dark>
-                <v-card-text class="text-center">
-                   {{fechaf}} Euro BVC {{euro}} 
-                </v-card-text>
-            </v-card>  
-        </v-flex>
-    </v-layout>-->
-    <!-- <v-layout :wrap="true" lg5> -->
+        <v-divider light :vertical="true" class="mx-12"></v-divider>
         <!-- #################################### GRAFICA BITCOIN #################################-->
-        <v-flex xs="12" sm="4" lg5>
+        <v-flex xs12 sm12 md5 lg5 class="mt-6">
             <v-card color="#385F73" dark>
                 <v-card-text class="text-center" >
                   Bitcoin - BTC {{btc}}
+                    <v-img
+                    class="mx-auto"
+                    src="../assets/moneda-bitcoin.png"
+                    max-height="30"
+                    max-width="30"
+                    ></v-img>
                 </v-card-text>
             </v-card> 
             <LineChart 
@@ -115,12 +115,18 @@
         <!-- #################################### GRAFICA BITCOIN #################################-->
     </v-layout>
     <v-divider class="mx-0" vertical></v-divider>    
-    <v-layout :wrap="true">
+    <v-layout :wrap="true" align-center justify-center>
         <!-- #################################### GRAFICA ETHERIUM #################################-->
-        <v-flex xs="12" sm="4" lg5>
+        <v-flex xs12 sm12 md5 lg5 class="mt-2">
             <v-card color="#385F73" dark>
                 <v-card-text class="text-center">
                     Etherium - ETH {{eth}}
+                    <v-img
+                    class="mx-auto"
+                    src="../assets/etherum.png"
+                    max-height="30"
+                    max-width="30"
+                    ></v-img>
                 </v-card-text>
             </v-card>  
                 <LineChart 
@@ -129,12 +135,18 @@
                 </LineChart>
         </v-flex>
         <!-- #################################### GRAFICA ETHERIUM #################################-->
-        <v-spacer></v-spacer>   
+        <v-divider light :vertical="true" class="mx-12"></v-divider> 
         <!-- #################################### GRAFICA BINANCE #################################-->
-        <v-flex xs="12" sm="4" lg5>
+        <v-flex xs12 sm12 md5 lg5 class="mt-6">
             <v-card color="#385F73" dark>
                 <v-card-text class="text-center">
                     Binance - BNB {{bnb}}
+                    <v-img
+                    class="mx-auto"
+                    src="../assets/binance.png"
+                    max-height="30"
+                    max-width="30"
+                    ></v-img>
                 </v-card-text>
             </v-card>
             <LineChart 
@@ -144,6 +156,24 @@
         </v-flex>
         <!-- #################################### GRAFICA BINANCE #################################-->
     </v-layout>
+    <v-bottom-sheet v-model="sheet">
+      <v-sheet
+        class="text-center"
+        height="200px"
+      >
+        <v-btn
+          class="mt-6"
+          text
+          color="red"
+          @click="sheet = !sheet"
+        >
+          Cerrar
+        </v-btn>
+        <div class="py-3">
+          USUARIO NO AUTORIZADO
+        </div>
+      </v-sheet>
+    </v-bottom-sheet>
 </v-container>
 </template>
 
@@ -153,8 +183,7 @@
 import axios  from "axios";
 import moment from "moment";
 import LineChart from "@/components/LineChart.js"
-
-
+import { mapMutations, mapState } from 'vuex'
 
 export default {
     components: {
@@ -181,10 +210,15 @@ export default {
           tasas : [],
           tasasBit : [],
           tasasBnb : [],
+          sheet: false,
           tasasVes : []
         }
     },
+    computed: {
+        ...mapState(['autorizado'])
+    },
     methods:{
+        ...mapMutations(['verificar']),
         fillDataVes(){
             // console.log ("tamaño "+this.tasas.length)
             let fechas = []
@@ -345,8 +379,6 @@ export default {
 
             }   
         },
-
-
         async getCriptos(){
             try {
                 let datos = await axios.get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=bitcoin%2Cethereum%2Cbinancecoin&order=market_cap_desc&per_page=100&page=1&sparkline=false')
@@ -569,14 +601,15 @@ export default {
         }
     },
     created() {
+        this.verificar()
+    },
+    mounted() {
         this.getDolar(this.fecha)
         this.getCriptos(this.fecha)
         this.getEth()
         this.getBit()
         this.getBnb()
         this.getVes()
-    },
-    mounted() {
     },
 }
 </script>

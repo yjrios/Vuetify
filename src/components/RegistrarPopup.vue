@@ -6,24 +6,30 @@
   @submit.prevent="submit"
   >
     <v-layout row justify-center>              
-      <v-dialog v-model="dialog" persistent max-width="800px"> -->
+      <v-dialog v-model="dialog" persistent max-width="800px">
         <v-card>
           <v-card-title>
+            <span class="headline">Perfíl del usuario</span>
+            <v-spacer></v-spacer>
+            <v-flex>
+              <template>
+                <v-avatar size="80">
+                  <v-img class="img-fluid grey darken-4" :src="ruta"></v-img>
+                </v-avatar>
+              </template>
+            </v-flex>
             <v-flex xs12 sm6>
               <v-file-input
               v-model="img"
               prepend-icon="mdi-account-circle"
-              accept="image/png, image/jpeg"
+              accept="image/*"
               placeholder="Añade una imagen *"
-              truncate-length="10"
+              truncate-length="20"
               :rules="imgRules"
               hint="Campo requerido"
-              >
-              </v-file-input>
+              @change="previewImage"
+              ></v-file-input>
             </v-flex>
-            <v-spacer></v-spacer>
-            <span class="headline">Perfíl del usuario</span>
-            
           </v-card-title>
           <v-card-text>
             <v-container grid-list-md>
@@ -78,6 +84,7 @@
                   :rules="emailRules"
                   label="E-mail *"
                   required
+                  :disabled="lockEmail"
                   ></v-text-field>
                 </v-flex>
                 <v-flex xs12>
@@ -127,7 +134,7 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn keyup="enter" color="blue darken-1" text @click="dialog = false, regresar()" @keyup.esc="regresar">Cancelar</v-btn>
+            <v-btn keyup="enter" color="blue darken-1" text @click="regresar(),dialog = false" @keyup.esc="regresar">Cancelar</v-btn>
             <v-btn color="blue darken-1" text @click="submit" @keyup.enter="submit">Guardar</v-btn>
           </v-card-actions>
         </v-card>
@@ -144,7 +151,7 @@
             class="mt-6"
             text
             color="red"
-            @click="sheet = !sheet, valid = !valid"
+            @click="sheet = !sheet, valid = !valid, registroExitoso()"
           >
             Cerrar
           </v-btn>
@@ -153,26 +160,30 @@
           </div>
         </v-sheet>
       </v-bottom-sheet>
-  </template>
+    </template>
   </v-form>
   
 </template>
 
 <script>
 
-import { mapActions, mapState } from 'vuex'
-
+import { mapActions, mapState, mapMutations } from 'vuex'
+import axios from 'axios'
 export default {
   name: 'addUsuario',
 
   data(){
     return{
+      img2: null,
+      ruta: '',
+      tiposNiveles: '',
+      lockEmail: false,
       erroresLocales: '',
       sheet: false,
       timeout: 6000,
-      nivel2: '',
+      nivel2: [],
       dialog: true,
-      items: [{value:'0', text:'ADMINIS'},{value:'1', text:'GUEST'}],
+      items: [],
       img: [],
       custom: false,
       valid: false,
@@ -217,7 +228,7 @@ export default {
   },
 
   computed:{
-    ...mapState(['datos', 'errores', 'registro']),
+    ...mapState(['datos', 'errores', 'registro','niveles','address']),
 
     progress () {
         return Math.min(100, this.contrasenia.length * 13)
@@ -234,44 +245,136 @@ export default {
   },
 
   methods:{
-    ...mapActions(['registrar','clearErrores']),
+    ...mapActions(['registrar','clearErrores','enviarPutUsuario']),
+    ...mapMutations(['limpiarRegistro']),
+
+    registroExitoso(){
+      if(this.erroresLocales.message === 'Actualizacion Exitosa'){
+        this.$router.push("/dash/usuarios")
+      }
+    },
 
     async submit(){
       this.clearErrores()
       this.$refs.form.validate()
-      console.log('Valida ',this.valid)
       if(this.valid){
-        let payload = {
-          'nombres': this.nombres,
-          'apellidos': this.apellidos,
-          'cargo': this.cargo,
-          'password': this.contrasenia,
-          'img': this.img.name,
-          'username': this.email,
-          'nivel': this.nivel.value
+        console.log(this.registro)
+        if (this.registro.length != 0) {
+          console.log('SI HAY REGISTRO')
+          const formData = new FormData()
+          if(this.img){
+            formData.append('img', this.img)
+            console.log('CAMBIO IMG')
+          }else{
+            formData.append('img', this.img2)
+            console.log('NO CAMBIO IMG')
+          }
+          formData.append('nombres', this.nombres)
+          formData.append('apellidos', this.apellidos)
+          formData.append('cargo', this.cargo)
+          formData.append('password', this.contrasenia)
+          if(!this.nivel){
+            formData.append('id_nivel', this.registro.id_nivel) 
+          }else{
+            formData.append('id_nivel', this.nivel.value)
+          }
+          await axios.put(process.env.VUE_APP_BASE_URL+'user/'+this.registro.username, formData)
+        .then(resp => {
+            console.log(resp)
+            this.erroresLocales = { message: resp.data.mensaje }
+            this.sheet = true
+        }).catch(er=> {
+          console.log(er)
+          this.erroresLocales = { message: er.response.message }
+            this.sheet = true
+        })
+        } else { 
+          console.log('NO HAY REGISTRO')
+          const formData = new FormData()
+          formData.append('img', this.img)
+          formData.append('nombres', this.nombres)
+          formData.append('apellidos', this.apellidos)
+          formData.append('cargo', this.cargo)
+          formData.append('password', this.contrasenia)
+          formData.append('username', this.email)
+          formData.append('id_nivel', this.nivel.value)
+          console.log('ENVIAR POST REGISTRAR')
+          await this.registrar(formData)
+          if(!this.errores){
+            this.erroresLocales = { message: 'Datos guardados exitosamente' }
+            this.sheet = true
+            this.limpiarRegistro()
+            this.$router.push("/dash/usuarios")
+          }else{
+            this.erroresLocales = { message: 'A ocurrido un error, por favor intente más tarde' }
+          }
         }
-        console.log(payload)
-        await this.registrar(payload)
-        this.erroresLocales = {
-          message: 'Verifique los datos e intente nuevamente'
-        }
-        this.sheet = true
-        this.$router.push("/dash/usuarios")
+        this.limpiarRegistro()
       }else{
-        console.log('PASA POR EL ELSE')
         this.erroresLocales = {
           message: 'Verifique los datos e intente nuevamente'
         }
         this.sheet = true
       }
-      // if(this.errores.length == 0){
-      //   this.$router.push("/dash/usuarios")
-      // }
     },
 
     regresar(){
+      this.limpiarRegistro()
+      this.nombres = ''
+      this.apellidos = ''
+      this.cargo = ''
+      this.nivel = ''
+      this.email = ''
       this.$router.push("/dash/usuarios")
+    },
+
+    previewImage (event) {
+      var input = event.target
+      if (input.files) {
+        var reader = new FileReader()
+        reader.onload = (e) => {
+          this.ruta = e.target.result
+        }
+        this.img = input.files[0]
+        reader.readAsDataURL(input.files[0])
+      }
     }
-  }
+  },
+
+  created(){
+    axios.get(process.env.VUE_APP_BASE_URL+'user/niveles')
+    .then(resp => {
+      if(resp.data){
+        if(this.registro != 0){
+          this.lockEmail = true
+          this.nombres = this.registro.nombres
+          this.apellidos = this.registro.apellidos
+          this.cargo = this.registro.cargo
+          this.email = this.registro.username
+          this.img.name = this.registro.img
+          this.ruta = this.address+this.registro.img
+          this.items = resp.data.map(element => {
+            if(element.id_nivel === this.registro.id_nivel){
+              this.nivel = element.id_nivel
+            }
+            return { value: element.id_nivel, text: element.nivel }
+          })
+        }else{
+          this.lockEmail = false
+          this.limpiarRegistro()
+          this.nombres = ''
+          this.apellidos = ''
+          this.cargo = ''
+          this.email = ''
+          this.items = resp.data.map(element =>{
+            return { value: element.id_nivel, text: element.nivel }
+          }) 
+        }
+      }
+    })
+    .catch (error => {
+      console.log(error)
+    })
+  },
 }
 </script>

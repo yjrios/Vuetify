@@ -18,26 +18,32 @@ const routes = [
     path: '/dash',
     name: 'Vista Dashboard',
     component: () => import(/* webpackChunkName: "DashboardView" */ '../views/DashboardView.vue'),
+    redirect: '/dash/mostrarbalance',
     children: [
       {
         path: 'usuarios',
-        name: 'Usuarios General',
+        // name: 'Usuarios General',
         component: () => import(/* webpackChunkName: "GridUsuarios" */ '../components/GridUsuarios.vue')
       },
       {
         path: 'addusuario',
-        name: 'Alta Usuario',
+        // name: 'Alta Usuario',
         component: () => import(/* webpackChunkName: "RegistrarPopup" */ '../components/RegistrarPopup.vue')
       },
       {
-        path: 'mostrarbalance',
-        name: 'Balance General',
+        path: '/dash/mostrarbalance',
+        // name: 'Balance General',
         component: () => import(/* webpackChunkName: "BalanceGeneral" */ '../components/BalanceGeneral.vue')
       },
       {
         path: 'valordolar',
-        name: 'Consulta por día',
+        // name: 'Consulta por día',
         component: () => import(/* webpackChunkName: "Consulta por día" */ '../components/ConsultaDolar.vue')
+      },
+      {
+        path: '/dash/load',
+        // name: 'Consulta por día',
+        component: () => import(/* webpackChunkName: "Consulta por día" */ '../views/FileLoadView.vue')
       },
     ]
   },

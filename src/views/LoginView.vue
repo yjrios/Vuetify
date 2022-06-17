@@ -1,4 +1,5 @@
 <template>
+  <v-container>
   <v-form lazy-validation ref="form" v-model="valida" @submit.prevent="submit">
     <v-card align="center" class="elevation-12 contenedor">
       <v-toolbar dark color="orange lighten-1">
@@ -58,6 +59,7 @@
       </v-snackbar>
     </v-card>
   </v-form>
+  </v-container>
 </template>
 
 <script>
@@ -123,7 +125,7 @@ export default{
 
 <style scoped>
 .contenedor{
-  margin-top: 34%;
+  margin-top: 22%;
 }
 .colorTexto{
   color: Black;

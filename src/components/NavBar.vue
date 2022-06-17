@@ -6,37 +6,11 @@
     flat
     height="75"
     collapse-on-scroll
-    min-width="10%"
   >
-  
-    <div class="mx-3" />
-    <v-app-bar-nav-icon @click="menuBarra = true"></v-app-bar-nav-icon>
     <v-spacer></v-spacer>
-    <v-btn icon>
-        <v-icon>mdi-export</v-icon>
-      </v-btn>
-    <v-menu
-      bottom
-      left
-      offset-x
-      origin="top rigth"
-      transition="fab-transition"
-      v-model="menuBarra"
-    >
-      <v-list
-        :tile="false"
-        nav
-      >
-        <div>
-        <app-bar-item
-            v-for="(n, i) in notifications"
-            :key="`item-${i}`"
-        >
-            <v-list-item-title v-text="n" />
-        </app-bar-item>
-        </div>
-      </v-list>
-    </v-menu>
+    <!-- <v-btn icon > -->
+      <v-icon @click="sigout()">mdi-export</v-icon>
+    <!-- </v-btn> -->
   </v-app-bar>
 </template>
 
@@ -45,7 +19,7 @@
   import { VHover, VListItem } from 'vuetify/lib'
 
   // Utilities
-  import { mapState, mapMutations } from 'vuex'
+  import { mapState, mapMutations, mapActions } from 'vuex'
 
   export default {
     name: 'DashboardCoreAppBar',
@@ -102,6 +76,11 @@
       ...mapMutations({
         setDrawer: 'SET_DRAWER',
       }),
+      ...mapActions(['cerrarSesion']),
+
+      sigout () {
+        this.cerrarSesion()
+      }
     },
   }
 </script>
