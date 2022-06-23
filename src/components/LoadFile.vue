@@ -1,21 +1,21 @@
 <template>
     <v-form @submit.prevent="save">
-        <v-dialog v-model="dialog" max-width="1000px" persistent>
+        <v-dialog v-model="dialog" max-width="500px" persistent>
             <v-card color='#E0F7FA'>
                 <v-card-title><span class="headline text-center">Cargando Archivo</span></v-card-title>
                 <v-card-text>
                     <v-layout :wrap="true">
-                        <v-flex xs12 sm4 md4 lg6>
+                        <v-flex xs12 sm4 md4 lg12>
                             <v-file-input
                             v-model="file"
                             prepend-icon="mdi-paperclip"
                             accept="file/xls"
-                            placeholder="Añade una archivo *"
-                            truncate-length="20"
+                            placeholder="Añade un archivo *"
+                            truncate-length="50"
                             hint="Campo requerido"
                             ></v-file-input>
                         </v-flex>
-                        <v-flex xs12 sm4 md4 lg3>
+                        <!-- <v-flex xs12 sm4 md4 lg3>
                             <v-card class="ml-5 my-3">
                                 <v-menu
                                 v-model="menu1"
@@ -82,7 +82,7 @@
                                     ></v-date-picker>
                                 </v-menu>
                             </v-card>
-                        </v-flex>
+                        </v-flex> -->
                     </v-layout>
                 </v-card-text>
                 <v-card class="align-center mx-auto" color='#E0F7FA'>
@@ -103,25 +103,17 @@
 <script>
 
 import axios from 'axios'
+import readXlsxFile from 'read-excel-file'
 
 export default {
     name: 'loadfile',
 
     data () {
         return {
-            fechad: new Date().toISOString().substr(0, 10),
-            fechah: new Date().toISOString().substr(0, 10),
-            fchE: new Date().toISOString().substr(0, 10),
-            menu1: null,
-            menu2: null,
             file: null,
             dialog: true,
             minimo: "2022",
-            maximo: new Date().getMonth().toString(),
-            fechaRules:[
-                v => !!v || 'Este campo es requerido',
-                v => (v && ( v.getFullMonth() > fchE.getFullMonth() || v.getFullYear() > fchE.getFullYear() )) || 'Las MM/AA no puede puedes ser mayor al actual'
-            ]
+            maximo: "2023"
         }
     },
     methods: {
@@ -130,29 +122,28 @@ export default {
             this.$router.go(-1)
         },
         save () {
-            if(this.file && this.fechad && this.fechah){
-                const formData = new FormData()
-                formData.append('file', this.file)
-                formData.append('fchIni', this.fechad)
-                formData.append('fchFin', this.fechah)
-
-                try {
-                    axios.post(process.env.VUE_APP_BASE_URL +'cargadedocumento', formData)
-                    .then(resp => {
-                        console.log(resp)
-                    })
-                    .catch(err => {
-                        console.log(err)
-                    })
-                } catch (error) {
-                    console.log(error)
-                }
+            if(this.file){
+                readXlsxFile(this.file)
+                .then( xlsx => {
+                    let payload = {
+                        data: xlsx
+                    }
+                    try {
+                        this.axios.post(process.env.VUE_APP_BASE_URL +'cargadedocumento', payload)
+                        .then(resp => {
+                            console.log(resp)
+                        })
+                        .catch(err => {
+                            console.log(err)
+                        })
+                    } catch (error) {
+                        console.log(error)
+                    } 
+                })
             }
         }
     },
     mounted (){
-        let fec = new Date().getMonth()+1
-        console.log(fec)
     }
 }
 </script>

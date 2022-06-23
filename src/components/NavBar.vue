@@ -5,10 +5,9 @@
     color="transparent"
     flat
     height="75"
-    collapse-on-scroll
   >
     <v-spacer></v-spacer>
-    <!-- <v-btn icon > -->
+    <!-- <v-btn icon collapse-on-scroll> -->
       <v-icon @click="sigout()">mdi-export</v-icon>
     <!-- </v-btn> -->
   </v-app-bar>

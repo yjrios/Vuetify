@@ -7,21 +7,28 @@
     app
     width="260"
   >
-  <v-btn text><v-icon left size="20" @click="expandOnHover= !expandOnHover">mdi-arrange-send-backward</v-icon>{{ this.datos.data.username}}</v-btn>
+  <v-btn text dark><v-icon left size="20" @click="expandOnHover= !expandOnHover">mdi-arrange-send-backward</v-icon>{{ this.datos.data.username}}</v-btn>
     <v-list v-if="!expandOnHover">
-      <v-list-item class="px-10">
-        <v-icon size="50">mdi-account-circle</v-icon>
+      <v-list-item class="px-10 mb-4 ml-5">
+        <v-avatar size="80">
+          <v-img class="img-fluid grey darken-4" :src="this.address+this.datos.data.img"></v-img>
+        </v-avatar>
       </v-list-item>
-      <v-list-item>
-        <span>¡Bienvenido!</span>
+      <v-list-item class="ml-10" dark>
+        <div>
+          <span>¡Bienvenido!</span>
+        </div>
       </v-list-item>
     </v-list>
     <v-divider></v-divider>
 
-    <v-list
-    >
+    <v-list shaped>
+      <v-list-item-group
+        v-model="selectedItem"
+        active-class="black--text"
+      >
       <router-link to="/dash/mostrarbalance">
-        <v-list-item >
+        <v-list-item dark>
           <v-list-item-icon>
             <v-icon>mdi-chart-line</v-icon>
           </v-list-item-icon>
@@ -30,7 +37,7 @@
       </router-link>
 
       <router-link to="/dash/load">
-        <v-list-item v-if="this.autorizado" color="white">
+        <v-list-item v-if="this.autorizado" dark>
           <v-list-item-icon>
             <v-icon>mdi-file-upload-outline</v-icon>
           </v-list-item-icon>
@@ -39,13 +46,14 @@
       </router-link>
 
       <router-link to="/dash/usuarios">
-        <v-list-item v-if="this.autorizado">
+        <v-list-item v-if="this.autorizado" dark>
           <v-list-item-icon>
             <v-icon>mdi-account-details</v-icon>
           </v-list-item-icon>
           <v-list-item-title>Usuarios</v-list-item-title>
         </v-list-item>
       </router-link>
+      </v-list-item-group>
     </v-list> 
   </v-navigation-drawer>
 </template>
@@ -59,6 +67,7 @@ import { mapState } from 'vuex'
      return{
       user: '',
       expandOnHover: false,
+      selectedItem: 0,
       items: [
           {
             icon: 'mdi-view-dashboard',
@@ -79,7 +88,7 @@ import { mapState } from 'vuex'
      }
    },
    computed: {
-      ...mapState(['autorizado','datos'])
+      ...mapState(['autorizado','datos','address'])
     },
  }
 
