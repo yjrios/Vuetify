@@ -45,6 +45,11 @@ const routes = [
         // name: 'Consulta por día',
         component: () => import(/* webpackChunkName: "Consulta por día" */ '../views/FileLoadView.vue')
       },
+      {
+        path: '/dash/month',
+        // name: 'Consulta por día',
+        component: () => import(/* webpackChunkName: "Consulta por día" */ '../components/BalanceMensual.vue')
+      },
     ]
   },
 ]

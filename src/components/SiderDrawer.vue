@@ -30,12 +30,34 @@
       <router-link to="/dash/mostrarbalance">
         <v-list-item dark>
           <v-list-item-icon>
-            <v-icon>mdi-chart-line</v-icon>
+            <v-icon>mdi-view-dashboard-outline</v-icon>
           </v-list-item-icon>
-          <v-list-item-title>Estadísticas Mensuales</v-list-item-title>
+          <v-list-item-title>Dashboard</v-list-item-title>
         </v-list-item>
       </router-link>
 
+      <v-list-group prepend-icon="mdi-chart-box-plus-outline">
+        <template v-slot:activator>
+          <v-list-item-title dark>Reportes</v-list-item-title>
+        </template>
+        <router-link to="/dash/month">
+          <v-list-item v-if="this.autorizado" dark>
+            <v-list-item-icon>
+              <v-icon>mdi-chart-line</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>Gráficos</v-list-item-title>
+          </v-list-item>
+        </router-link>
+        <router-link to="/dash/month">
+          <v-list-item v-if="this.autorizado" dark>
+            <v-list-item-icon>
+              <v-icon>mdi-file-chart-outline</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>Listado Ingresos</v-list-item-title>
+          </v-list-item>
+        </router-link>
+      </v-list-group>
+      
       <router-link to="/dash/load">
         <v-list-item v-if="this.autorizado" dark>
           <v-list-item-icon>
@@ -60,6 +82,7 @@
 
 <script>
 import { mapState } from 'vuex'
+import decode from 'jwt-decode'
  export default{
    name: 'SiderDrawer',
 
@@ -90,6 +113,9 @@ import { mapState } from 'vuex'
    computed: {
       ...mapState(['autorizado','datos','address'])
     },
+    beforeCreate(){
+      this.user = decode(localStorage.getItem('token'))
+    }
  }
 
 </script>
