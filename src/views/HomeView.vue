@@ -3,7 +3,7 @@
     <v-expand-x-transition>
       <v-card color="transparent" min-height="15%">
         <v-card-text class="text-right pt-10 pr-10 font-italic text-md-end text-lg-right">
-          <span class="text-h3 orange lighten-1--text font-weight-medium">Panel Gerencial</span>
+          <span class="text-h3 orange--text font-weight-medium">Panel Gerencial</span>
         </v-card-text>
       </v-card>
       </v-expand-x-transition>
@@ -34,7 +34,7 @@ import login from './LoginView.vue'
 
 <style scoped>
 .background{
-  background: url('../assets/back.jpg');
+  background: url('../assets/back2.jpg');
   background-size: cover;
   height: 100vh;
 }
