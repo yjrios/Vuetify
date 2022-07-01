@@ -45,10 +45,12 @@
       <v-snackbar v-model="snackbar"
       color="amber lighten-1"
       bottom
+      light
       >
       {{ errores.message }}
       <template>  
         <v-btn
+        right
         text
         dark
         color="black"
@@ -99,7 +101,7 @@ export default{
   },
  
   methods:{
-    ...mapMutations(['setUsuario','vaciarErrores']),
+    ...mapMutations(['setUsuario','vaciarErrores','setearopcionmenu']),
     ...mapActions(['iniciarSesion','clearErrores']),
 
     async submit () {
@@ -108,6 +110,7 @@ export default{
       if(this.valida){
         await this.iniciarSesion({username: this.email, password: this.contrasenia})
         if(this.errores.length == 0){
+          this.setearopcionmenu('dashboard')
           this.$router.push('/dash')
         }else{
           this.snackbar = true

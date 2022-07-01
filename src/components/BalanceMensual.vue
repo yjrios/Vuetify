@@ -4,12 +4,12 @@
             <v-divider dark vertical class="mx-5"></v-divider>
             <v-flex xs12 sm12 md12 lg5 offset-sm="1" class="mb-2">
                 <div align="center" justify="center">
-                    <span>RANGO DE FECHAS</span>
+                    <span class="font-weight-medium">RANGO DE FECHAS</span>
                 </div>
                 <v-layout :wrap="true">
                     <v-divider dark vertical class="mx-2"></v-divider>
                     <v-flex xs12 sm12 md12 lg4>
-                        <v-card class="mb-5" color="primary" dark>
+                        <v-card class="mb-5" color="blue darken-1" dark>
                             <v-menu
                                 v-model="menu1"
                                 close-on-content-click
@@ -45,7 +45,7 @@
                     </v-flex>
                     <v-divider light vertical class="mx-8"></v-divider>
                     <v-flex xs12 sm12 md12 lg4>
-                        <v-card class="mb-5" color="primary" dark>
+                        <v-card class="mb-5" color="blue darken-1" dark>
                             <v-menu
                                 v-model="menu2"
                                 close-on-content-click
@@ -81,7 +81,7 @@
                     </v-flex>
                 </v-layout>
                 <v-layout :wrap="true">
-                    <v-flex xs12 sm12 md12 lg12>
+                    <v-flex xs12 sm12 md12 lg12 v-if="showgrafica">
                         <v-card color="#FFFFFF">
                             <BarChart :chartData='data1'/>
                         </v-card>
@@ -91,12 +91,12 @@
             <v-divider dark vertical class="mx-8"></v-divider>
             <v-flex xs12 sm12 md12 lg5 offset-sm="1" class="mb-2">
                 <div align="center" justify="center">
-                    <span class="mt-mb-4">RANGO DE FECHAS</span>
+                    <span class="mt-mb-4 font-weight-medium">RANGO DE FECHAS</span>
                 </div>
                 <v-layout :wrap="true">
                     <v-divider dark vertical class="mx-2"></v-divider>
                     <v-flex xs12 sm12 md12 lg4>
-                        <v-card dark class="mb-5" color="primary">
+                        <v-card dark class="mb-5" color="blue darken-1">
                             <v-menu
                                 v-model="menu3"
                                 close-on-content-click
@@ -132,7 +132,7 @@
                     </v-flex>
                     <v-divider light vertical class="mx-8"></v-divider>
                     <v-flex xs12 sm12 md12 lg4>
-                        <v-card dark class="mb-5" color="primary">
+                        <v-card dark class="mb-5 mr-2" color="blue darken-1">
                             <v-menu
                                 v-model="menu4"
                                 close-on-content-click
@@ -167,24 +167,20 @@
                             </v-menu>
                         </v-card>
                     </v-flex>
-                    <v-flex>
+                    <v-flex xs12 sm12 md12 lg1>
+                        <div align="center" justify="center">
                         <v-tooltip bottom color="success">
                             <template v-slot:activator="{ on, attrs }">
-                                <v-btn plain class="mt-8" @click="solicitardata">
-                                    <v-icon 
-                                    color="success" 
-                                    size="40" 
-                                    v-bind="attrs" 
-                                    v-on="on"
-                                    >mdi-send-check-outline</v-icon>
-                                </v-btn>
+                                <v-btn v-on="on" v-bind="attrs" block type="submit" color="success" dark class="mt-8 mb-2" @click="solicitardata">Listar</v-btn>
+                                
                             </template>
                             <span>Enviar Rangos de Fechas</span>
                         </v-tooltip>
+                        </div>
                     </v-flex>
                 </v-layout>
                 <v-layout :wrap="true">
-                    <v-flex xs12 sm12 md12 lg12>
+                    <v-flex xs12 sm12 md12 lg12 v-if="showgrafica">
                         <v-card color="#FFFFFF">
                             <BarChart :chartData='data2'/>
                         </v-card>
@@ -228,6 +224,7 @@ export default {
             erroreLocales: '',
             minimo: "2020",
             maximo: new Date().toISOString().substr(0, 10),
+            showgrafica: false
         }
     },
 
@@ -336,6 +333,7 @@ export default {
                                 borderWidth: 2,
                             }]
                         }
+                        this.showgrafica = true
                     })
                     .catch(err => {
                         console.log(err)

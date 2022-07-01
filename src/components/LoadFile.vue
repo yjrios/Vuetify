@@ -15,74 +15,6 @@
                             hint="Campo requerido"
                             ></v-file-input>
                         </v-flex>
-                        <!-- <v-flex xs12 sm4 md4 lg3>
-                            <v-card class="ml-5 my-3">
-                                <v-menu
-                                v-model="menu1"
-                                close-on-content-click
-                                :nudge-right="40"
-                                transition="scale-transition"
-                                offset-y
-                                min-width="auto"
-                                >
-                                    <template v-slot:activator="{ on, attrs }">
-                                        <v-text-field
-                                        v-model="fechad"
-                                        label="Fecha Inicio Periodo"
-                                        prepend-icon="mdi-calendar"
-                                        readonly
-                                        v-bind="attrs"
-                                        v-on="on"
-                                        clearable
-                                        max-height="30"
-                                        ></v-text-field>
-                                    </template>
-
-                                    <v-date-picker 
-                                    v-model="fechad"
-                                    header-color="primary"
-                                    full-width
-                                    locale="es-ve"
-                                    :min="minimo"
-                                    :max="maximo"
-                                    ></v-date-picker>
-                                </v-menu>
-                            </v-card>
-                        </v-flex>
-                        <v-flex xs12 sm4 md4 lg3>
-                            <v-card class="ml-5 my-3">
-                                <v-menu
-                                v-model="menu2"
-                                close-on-content-click
-                                :nudge-right="40"
-                                transition="scale-transition"
-                                offset-y
-                                min-width="auto"
-                                >
-                                    <template v-slot:activator="{ on, attrs }">
-                                        <v-text-field
-                                            v-model="fechah"
-                                            label="Fecha Final Periodo"
-                                            prepend-icon="mdi-calendar"
-                                            readonly
-                                            v-bind="attrs"
-                                            v-on="on"
-                                            clearable
-                                            max-height="30"
-                                        ></v-text-field>
-                                    </template>
-
-                                    <v-date-picker 
-                                    v-model="fechah"
-                                    header-color="primary"
-                                    full-width
-                                    locale="es-ve"
-                                    :min="minimo"
-                                    :max="maximo"
-                                    ></v-date-picker>
-                                </v-menu>
-                            </v-card>
-                        </v-flex> -->
                     </v-layout>
                 </v-card-text>
                 <v-card class="align-center mx-auto" color='#E0F7FA'>
@@ -104,6 +36,7 @@
 
 import axios from 'axios'
 import readXlsxFile from 'read-excel-file'
+import { mapMutations, mapState } from 'vuex'
 
 export default {
     name: 'loadfile',
@@ -117,9 +50,11 @@ export default {
         }
     },
     methods: {
+        ...mapMutations(['setearopcionmenu']),
         cancel () {
             this.file = null
-            this.$router.go(-1)
+            this.setearopcionmenu('dashboard')
+            this.$router.push('/dash/mostrarbalance')
         },
         save () {
             if(this.file){
@@ -143,7 +78,5 @@ export default {
             }
         }
     },
-    mounted (){
-    }
 }
 </script>

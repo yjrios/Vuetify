@@ -11,7 +11,7 @@
     <v-list v-if="!expandOnHover">
       <v-list-item class="px-10 mb-4 ml-5">
         <v-avatar size="80">
-          <v-img class="img-fluid grey darken-4" :src="this.address+this.datos.data.img"></v-img>
+          <v-img class="img-fluid grey darken-4" :src="this.address+this.user.data.img"></v-img>
         </v-avatar>
       </v-list-item>
       <v-list-item class="ml-10" dark>
@@ -28,20 +28,25 @@
         active-class="black--text"
       >
       <router-link to="/dash/mostrarbalance">
-        <v-list-item dark>
+        <v-list-item v-if="this.autorizado" dark @click="enviaropcionmenu('dashboard')">
           <v-list-item-icon>
             <v-icon>mdi-view-dashboard-outline</v-icon>
           </v-list-item-icon>
-          <v-list-item-title>Dashboard</v-list-item-title>
+          <v-list-item-title class="ml-4">Dashboard</v-list-item-title>
         </v-list-item>
       </router-link>
-
-      <v-list-group prepend-icon="mdi-chart-box-plus-outline">
+      
+      <v-list-group v-if="this.autorizado">
         <template v-slot:activator>
-          <v-list-item-title dark>Reportes</v-list-item-title>
+          <v-list-item-icon>
+            <v-icon color="white">mdi-chart-box-plus-outline</v-icon>
+          </v-list-item-icon>
+          <v-list-item dark prepend-icon="mdi-chart-box-plus-outline">
+            <v-list-item-title>Reportes</v-list-item-title>
+          </v-list-item>
         </template>
         <router-link to="/dash/month">
-          <v-list-item v-if="this.autorizado" dark>
+          <v-list-item v-if="this.autorizado" dark @click="enviaropcionmenu('graficas')">
             <v-list-item-icon>
               <v-icon>mdi-chart-line</v-icon>
             </v-list-item-icon>
@@ -49,7 +54,7 @@
           </v-list-item>
         </router-link>
         <router-link to="/dash/listar">
-          <v-list-item v-if="this.autorizado" dark>
+          <v-list-item v-if="this.autorizado" dark @click="enviaropcionmenu('listado')">
             <v-list-item-icon>
               <v-icon>mdi-file-chart-outline</v-icon>
             </v-list-item-icon>
@@ -59,20 +64,20 @@
       </v-list-group>
       
       <router-link to="/dash/load">
-        <v-list-item v-if="this.autorizado" dark>
+        <v-list-item v-if="this.autorizado" dark @click="enviaropcionmenu('load')">
           <v-list-item-icon>
             <v-icon>mdi-file-upload-outline</v-icon>
           </v-list-item-icon>
-          <v-list-item-title>Cargar Archivo</v-list-item-title>
+          <v-list-item-title class="ml-4">Archivo</v-list-item-title>
         </v-list-item>
       </router-link>
 
       <router-link to="/dash/usuarios">
-        <v-list-item v-if="this.autorizado" dark>
+        <v-list-item v-if="this.autorizado" dark @click="enviaropcionmenu('users')">
           <v-list-item-icon>
             <v-icon>mdi-account-details</v-icon>
           </v-list-item-icon>
-          <v-list-item-title>Usuarios</v-list-item-title>
+          <v-list-item-title class="ml-4">Usuarios</v-list-item-title>
         </v-list-item>
       </router-link>
       </v-list-item-group>
@@ -81,7 +86,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 import decode from 'jwt-decode'
  export default{
    name: 'SiderDrawer',
@@ -111,12 +116,20 @@ import decode from 'jwt-decode'
      }
    },
    computed: {
-      ...mapState(['autorizado','datos','address'])
+      ...mapState(['autorizado','datos','address']),
     },
     created(){
-      this.user = decode(localStorage.getItem('token'))
-      console.log(this.user.data.username)
+      this.obtenerUsuario()
+      this.verificar()
     },
- } 
-
+    methods: {
+      ...mapMutations(['setearopcionmenu','verificar']),
+      enviaropcionmenu (opcion) {
+        this.setearopcionmenu(opcion)
+      },
+      obtenerUsuario () {
+        this.user = decode(localStorage.getItem('token'))
+      }
+    }
+  }
 </script>

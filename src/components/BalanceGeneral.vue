@@ -1,5 +1,5 @@
 <template>
-<v-container v-if="autorizado" fluid>
+<v-card v-if="autorizado">
     <v-layout :wrap="true" align-center justify-center>   
         <v-flex xs12 sm12 md5 lg5 offset-sm="1" class="mb-2">
             <v-card>
@@ -174,7 +174,7 @@
         </div>
       </v-sheet>
     </v-bottom-sheet>
-</v-container>
+</v-card>
 </template>
 
 

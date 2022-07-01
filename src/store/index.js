@@ -8,6 +8,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    opcionmenu: '',
     loading:[],
     datos:'',
     errores: '',
@@ -64,6 +65,7 @@ export default new Vuex.Store({
         .then(resp => {
           if (resp.status == 200){
             state.autorizado = true
+            console('AUTORIZADO')
           }
         })
         .catch(err => {
@@ -75,6 +77,26 @@ export default new Vuex.Store({
       } catch (error) {
         console.log(error)
       }
+    },
+    setearopcionmenu(state, opcion){
+      if (opcion === 'dashboard'){
+        state.opcionmenu = 0
+      }
+      if (opcion === 'graficas'){
+        state.opcionmenu = 1
+      }
+      if (opcion === 'listado'){
+        state.opcionmenu = 2
+      }
+      if (opcion === 'load'){
+        state.opcionmenu = 3
+      }
+      if (opcion === 'users'){
+        state.opcionmenu = 4
+      }
+    },
+    obtenerautorizado(state){
+      return state.autorizado
     }
   },
  
@@ -110,7 +132,6 @@ export default new Vuex.Store({
             }
             commit('cargarErrores', obj)
             }
-
             if (error.response.status === 404){
               let obj = {
                 message:'¡Usuario Incorrecto!'
@@ -146,7 +167,25 @@ export default new Vuex.Store({
           console.log(res)
         })
         .catch(error => {
-          commit('cargarErrores', error)
+          console.log('STORE')
+          if (error.response.status === 401) {
+            let obj = {
+              message:'¡Usuario Ya Existe!'
+             }
+             commit('cargarErrores', obj)
+          }
+          if (error.response.status === 400) {
+            let obj = {
+              message:'¡ERROR al ingresar los datos!'
+             }
+             commit('cargarErrores', obj)
+          }
+          if (error.response.status === 500) {
+            let obj = {
+              message:'¡ERROR del servidor!'
+             }
+             commit('cargarErrores', obj)
+          }
         })
       } catch (error) {
         console.log(error)

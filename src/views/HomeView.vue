@@ -2,8 +2,8 @@
   <v-container fluid class="background">
     <v-expand-x-transition>
       <v-card color="transparent" min-height="15%">
-        <v-card-text class="text-right pt-10 pr-10 font-weight-black font-italic text-md-end text-lg-right">
-          <span class="text-h4 white--text">Panel Gerencial</span>
+        <v-card-text class="text-right pt-10 pr-10 font-italic text-md-end text-lg-right">
+          <span class="text-h3 orange lighten-1--text font-weight-medium">Panel Gerencial</span>
         </v-card-text>
       </v-card>
       </v-expand-x-transition>
@@ -34,7 +34,7 @@ import login from './LoginView.vue'
 
 <style scoped>
 .background{
-  background: url('../assets/agl-back.png');
+  background: url('../assets/back.jpg');
   background-size: cover;
   height: 100vh;
 }

@@ -11,7 +11,7 @@
         hide-details
       ></v-text-field>
       <v-dialog v-model="dialog" max-width="800px" persistent>
-        <template v-slot:activator="{ on }" v-if="autorizado">
+        <template v-slot:activator="{ on }">
             <v-btn color="success" class="mx-2" v-on="{on}" fab @click.native.stop="dialog = true" to="/dash/addusuario">
                <v-icon dark color="blue darken-4">mdi-plus</v-icon>
             </v-btn>
@@ -53,6 +53,7 @@
       <v-sheet
         class="text-center"
         height="200px"
+        color="#E0F7FA"
       >
         <v-btn
           class="mt-6"
@@ -75,8 +76,8 @@
 
 <script>
 import axios from 'axios'
-import { mapActions, mapState } from 'vuex'
-  export default {
+import { mapActions, mapMutations, mapState } from 'vuex'
+export default {
     data () {
       return{
         unauthorized: false,
@@ -97,13 +98,15 @@ import { mapActions, mapState } from 'vuex'
       }
     },
     computed: {
-      ...mapState(['datos','errores','usuarios','registro','autorizado'])
+      ...mapState(['datos','errores','usuarios','registro','autorizado']),
     },
     created () {
+      this.verificar()
       this.cargarGrid()
     },
     methods: {
       ...mapActions(['getDatos','clearErrores', 'editarUsuario']),
+      ...mapMutations(['verificar']),
       
       async cargarGrid(){
         const config = { headers: { token: localStorage.getItem('token') }}
@@ -112,7 +115,6 @@ import { mapActions, mapState } from 'vuex'
         if( this.usuarios == '' && this.errores.length != 0){
           this.sheet = true
           this.unauthorized = true
-          console.log('AUTORIZADO')
         }
       },
       async modificarUsuario(usuario){

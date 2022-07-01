@@ -1,7 +1,8 @@
 <template>
     <v-container>
-        <v-layout>
-            <v-flex xs12 sm12 md12 lg4>
+        <v-layout :wrap="true">
+            <v-divider dark vertical class="mx-3"></v-divider>
+            <v-flex xs12 sm12 md3 lg4>
                 <v-card class="mb-5" color="primary" dark>
                     <v-menu
                         v-model="menu1"
@@ -37,7 +38,7 @@
                 </v-card>
             </v-flex>
             <v-divider light vertical class="mx-8"></v-divider>
-            <v-flex xs12 sm12 md12 lg4>
+            <v-flex xs12 sm12 md3 lg4>
                 <v-card class="mb-5" color="primary" dark>
                     <v-menu
                         v-model="menu2"
@@ -73,8 +74,8 @@
                 </v-card>
             </v-flex>
             <v-divider light vertical class="mx-8"></v-divider>
-            <v-flex>
-                <v-btn type="submit" color="blue darken-3" dark class="mt-8" @click="listar">Listar</v-btn>
+            <v-flex xs12 sm12 md2 lg2>
+                <v-btn block type="submit" color="success" dark class="mt-8 mb-2" @click="listar">Listar</v-btn>
             </v-flex>
         </v-layout>
         <v-layout>

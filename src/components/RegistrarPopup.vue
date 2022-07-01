@@ -27,7 +27,6 @@
               truncate-length="20"
               :rules="imgRules"
               hint="Campo requerido"
-              @change="previewImage"
               ></v-file-input>
             </v-flex>
           </v-card-title>
@@ -146,6 +145,7 @@
         <v-sheet
           class="text-center"
           height="100px"
+          color="#E0F7FA"
         >
           <v-btn
             class="mt-6"
@@ -199,11 +199,11 @@ export default {
       email: '',
       nombresRules: [
         v => !!v || 'Este campo es requerido',
-        v => (v && v.length > 10) || 'Los nombres deben tener mínimo de 10 caracteres',
+        v => (v && v.length > 4) || 'Los nombres deben tener mínimo de 10 caracteres',
       ],
       apellidosRules: [
         v => !!v || 'Este campo es requerido',
-        v => (v && v.length > 10) || 'Los apellidos deben tener mínimo de 10 caracteres',
+        v => (v && v.length > 4) || 'Los apellidos deben tener mínimo de 10 caracteres',
       ],
       emailRules: [
         v => !!v || 'El e-mail es un campo requerido',
@@ -261,14 +261,11 @@ export default {
       if(this.valid){
         console.log(this.registro)
         if (this.registro.length != 0) {
-          console.log('SI HAY REGISTRO')
           const formData = new FormData()
           if(this.img){
             formData.append('img', this.img)
-            console.log('CAMBIO IMG')
           }else{
             formData.append('img', this.img2)
-            console.log('NO CAMBIO IMG')
           }
           formData.append('nombres', this.nombres)
           formData.append('apellidos', this.apellidos)
@@ -280,17 +277,16 @@ export default {
             formData.append('id_nivel', this.nivel.value)
           }
           await axios.put(process.env.VUE_APP_BASE_URL+'user/'+this.registro.username, formData)
-        .then(resp => {
-            console.log(resp)
-            this.erroresLocales = { message: resp.data.mensaje }
-            this.sheet = true
-        }).catch(er=> {
-          console.log(er)
-          this.erroresLocales = { message: er.response.message }
-            this.sheet = true
-        })
+          .then(resp => {
+              console.log(resp)
+              this.erroresLocales.message = 'Actualización exitosa'
+              this.sheet = true
+          }).catch(er=> {
+            console.log(er)
+            this.erroresLocales = { message: er.response.message }
+              this.sheet = true
+          })
         } else { 
-          console.log('NO HAY REGISTRO')
           const formData = new FormData()
           formData.append('img', this.img)
           formData.append('nombres', this.nombres)
@@ -299,16 +295,25 @@ export default {
           formData.append('password', this.contrasenia)
           formData.append('username', this.email)
           formData.append('id_nivel', this.nivel.value)
-          console.log('ENVIAR POST REGISTRAR')
-          await this.registrar(formData)
-          if(!this.errores){
-            this.erroresLocales = { message: 'Datos guardados exitosamente' }
-            this.sheet = true
-            this.limpiarRegistro()
-            this.$router.push("/dash/usuarios")
-          }else{
-            this.erroresLocales = { message: 'A ocurrido un error, por favor intente más tarde' }
-          }
+            await axios.post(process.env.VUE_APP_BASE_URL+'usernuevo', formData)
+            .then(res =>{
+                this.erroresLocales = { message: 'Usuario añadido exitosamente' }
+                this.sheet = true
+                this.limpiarRegistro()
+                this.$router.push("/dash/usuarios")
+            })
+            .catch(error => {
+              if (error.response.status === 401) {
+                this.erroresLocales = { message: 'E-mail Ya Existe' }
+              }
+              if (error.response.status === 400) {
+                this.erroresLocales = { message: 'ERROR al ingresar los datos' }
+              }
+              if (error.response.status === 500) {
+                this.erroresLocales = { message: 'ERROR en el servidor' }
+              }
+              this.sheet = true
+            })
         }
         this.limpiarRegistro()
       }else{
@@ -329,17 +334,17 @@ export default {
       this.$router.push("/dash/usuarios")
     },
 
-    previewImage (event) {
-      var input = event.target
-      if (input.files) {
-        var reader = new FileReader()
-        reader.onload = (e) => {
-          this.ruta = e.target.result
-        }
-        this.img = input.files[0]
-        reader.readAsDataURL(input.files[0])
-      }
-    }
+    // previewImage (event) {
+    //   var input = event.target
+    //   if (input.files) {
+    //     var reader = new FileReader()
+    //     reader.onload = (e) => {
+    //       this.ruta = e.target.result
+    //     }
+    //     this.img = input.files[0]
+    //     reader.readAsDataURL(input.files[0])
+    //   }
+    // }
   },
 
   created(){
