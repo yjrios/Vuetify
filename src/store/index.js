@@ -10,7 +10,7 @@ export default new Vuex.Store({
   state: {
     loading:[],
     datos:'',
-    errores:[],
+    errores: '',
     usuarios: [],
     registro: [],
     token: '',
@@ -46,6 +46,7 @@ export default new Vuex.Store({
     },
     cargarErrores(state, error){
       state.errores = error
+      console.log(state.errores)
     },
     vaciarErrores(state){
       state.errores = []
@@ -92,7 +93,7 @@ export default new Vuex.Store({
         console.log(error)
       }
     },
-
+ 
     async iniciarSesion({commit}, payload){
        try {
           await axios.post(process.env.VUE_APP_BASE_URL+'login', payload)
@@ -102,9 +103,27 @@ export default new Vuex.Store({
             }
           })
          .catch(error =>{
-            commit('cargarErrores', error)
+           console.log(error.response.status)
+           if (error.response.status === 400){
+           let obj = {
+             message:'¡Contraseña Incorrecta!'
             }
-          )
+            commit('cargarErrores', obj)
+            }
+
+            if (error.response.status === 404){
+              let obj = {
+                message:'¡Usuario Incorrecto!'
+               }
+               commit('cargarErrores', obj)
+            }
+            if (error.response.status === 500){
+              let obj = {
+                message:'ERROR en el servidor'
+              }
+              commit('cargarErrores', obj)
+            }
+         })
        } catch (error) {
         commit('cargarErrores', error)
       }

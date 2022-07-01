@@ -7,7 +7,7 @@
     app
     width="260"
   >
-  <v-btn text dark><v-icon left size="20" @click="expandOnHover= !expandOnHover">mdi-arrange-send-backward</v-icon>{{ this.datos.data.username}}</v-btn>
+  <v-btn text dark><v-icon left size="20" @click="expandOnHover= !expandOnHover">mdi-arrange-send-backward</v-icon>{{this.user.data.username}}</v-btn>
     <v-list v-if="!expandOnHover">
       <v-list-item class="px-10 mb-4 ml-5">
         <v-avatar size="80">
@@ -48,7 +48,7 @@
             <v-list-item-title>Gráficos</v-list-item-title>
           </v-list-item>
         </router-link>
-        <router-link to="/dash/month">
+        <router-link to="/dash/listar">
           <v-list-item v-if="this.autorizado" dark>
             <v-list-item-icon>
               <v-icon>mdi-file-chart-outline</v-icon>
@@ -113,9 +113,10 @@ import decode from 'jwt-decode'
    computed: {
       ...mapState(['autorizado','datos','address'])
     },
-    beforeCreate(){
+    created(){
       this.user = decode(localStorage.getItem('token'))
-    }
- }
+      console.log(this.user.data.username)
+    },
+ } 
 
 </script>
