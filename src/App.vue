@@ -22,6 +22,7 @@ export default {
 </script>
 
 <style scoped>
+
 .colorfondo{
   background-color: #E0F7FA;
 }

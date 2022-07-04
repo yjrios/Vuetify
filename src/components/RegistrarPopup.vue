@@ -27,6 +27,7 @@
               truncate-length="20"
               :rules="imgRules"
               hint="Campo requerido"
+              @change="previewImage"
               ></v-file-input>
             </v-flex>
           </v-card-title>
@@ -334,17 +335,15 @@ export default {
       this.$router.push("/dash/usuarios")
     },
 
-    // previewImage (event) {
-    //   var input = event.target
-    //   if (input.files) {
-    //     var reader = new FileReader()
-    //     reader.onload = (e) => {
-    //       this.ruta = e.target.result
-    //     }
-    //     this.img = input.files[0]
-    //     reader.readAsDataURL(input.files[0])
-    //   }
-    // }
+    previewImage () {
+      if (this.img) {
+        let reader = new FileReader()
+        reader.onload = (e) => {
+          this.ruta = e.target.result;
+        }
+        reader.readAsDataURL(this.img)
+      }
+    }
   },
 
   created(){

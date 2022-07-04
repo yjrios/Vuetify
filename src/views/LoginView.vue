@@ -2,11 +2,10 @@
   <v-container>
   <v-form lazy-validation ref="form" v-model="valida" @submit.prevent="submit">
     <v-card align="center" class="elevation-12 contenedor">
-      <v-toolbar dark color="orange lighten-1">
-        <v-toolbar-title class="colorTexto">Login</v-toolbar-title>
-        <v-spacer></v-spacer>
-            <v-btn icon color="black" ><v-icon size="40" >account_circle</v-icon></v-btn>
-      </v-toolbar>
+          <v-toolbar src="../assets/AGL-LOGO.jpeg" height="80">
+            <v-icon color="black" size="40">account_circle</v-icon>
+            <v-toolbar-title class="colorTexto">Login</v-toolbar-title>
+          </v-toolbar>
       <v-card-text>
           <v-text-field
           prepend-icon="person"
@@ -29,31 +28,33 @@
           :counter="16"
           ></v-text-field>
           <v-btn
-          class="mr-4 colorTexto"
+          dark
+          class="mr-4"
           @click="submit"
-          color="orange lighten-1"
+          color="#2E7D32"
           @keyup.enter="submit"
           >
           Iniciar
           </v-btn>
-          <v-btn 
+          <v-btn
+          dark
           @click="clear"
-          color="orange lighten-1">
+          color="#2E7D32">
           Limpiar
           </v-btn>
         </v-card-text>
       <v-snackbar v-model="snackbar"
-      color="amber lighten-1"
+      color="#4CAF50"
       bottom
-      light
+      dark
       >
       {{ errores.message }}
-      <template>  
+      <template>
         <v-btn
         right
         text
         dark
-        color="black"
+        color="red"
         @click="snackbar = false">
           Cerrar
         </v-btn>
@@ -127,10 +128,13 @@ export default{
 </script>
 
 <style scoped>
+
+
+
 .contenedor{
-  margin-top: 22%;
+  margin-top: 10%;
 }
 .colorTexto{
-  color: Black;
+  color: white;
 }
 </style>

@@ -54,9 +54,7 @@
     <h3><span>{{ this.modulo[this.opcionmenu] }}</span></h3>
     </template>
     <v-spacer></v-spacer>
-    <!-- <v-btn icon collapse-on-scroll> -->
       <v-icon @click="sigout()">mdi-export</v-icon>
-    <!-- </v-btn> -->
   </v-app-bar>
 </template>
 
