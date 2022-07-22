@@ -304,13 +304,13 @@ export default {
                 this.$router.push("/dash/usuarios")
             })
             .catch(error => {
-              if (error.response.status === 401) {
+              if (error.response && error.response.status === 401) {
                 this.erroresLocales = { message: 'E-mail Ya Existe' }
               }
-              if (error.response.status === 400) {
+              if (error.response && error.response.status === 400) {
                 this.erroresLocales = { message: 'ERROR al ingresar los datos' }
               }
-              if (error.response.status === 500) {
+              if ( !error.response || (error.response && error.response.status === 500) ) {
                 this.erroresLocales = { message: 'ERROR en el servidor' }
               }
               this.sheet = true

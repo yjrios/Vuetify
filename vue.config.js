@@ -3,5 +3,12 @@ module.exports = defineConfig({
   transpileDependencies: [
     'vuetify'
   ],
-  lintOnSave:false
+  lintOnSave:false,
+  css: {
+    extract: {
+      ignoreOrder: true
+    },
+  },
+  publicPath: ''
+
 })

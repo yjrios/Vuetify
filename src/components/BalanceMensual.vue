@@ -1,4 +1,5 @@
 <template>
+<v-container>
     <v-card color="#BBDEFB">    
         <v-layout :wrap="true">
             <v-divider dark vertical class="mx-5"></v-divider>
@@ -189,6 +190,26 @@
             </v-flex>
         </v-layout>
     </v-card>
+    <v-card>
+        <v-snackbar v-model="snackbar"
+        color="#4CAF50"
+        bottom
+        dark
+        >
+            {{ this.erroreLocales.message }}
+            <template>
+                <v-btn
+                right
+                text
+                dark
+                color="red"
+                @click="snackbar = false">
+                Cerrar
+                </v-btn>
+            </template>
+        </v-snackbar>
+    </v-card>
+</v-container>
 </template>
 
 <script>
@@ -201,6 +222,7 @@ export default {
 
     data () {
         return{
+            snackbar: false,
             valor: null,
             aux: [],
             color1: [],
@@ -334,9 +356,19 @@ export default {
                             }]
                         }
                         this.showgrafica = true
+                        if (resp.data.rangetwo.length === 0) {
+                            this.datos = resp.data
+                            this.erroreLocales = { message: 'No hay datos para el rango 2' }
+                            this.snackbar = true
+                        }
+                        if (resp.data.rangeone.length === 0) {
+                            this.erroreLocales = { message: 'No hay datos para el rango 1' }
+                            this.snackbar = true
+                        }
                     })
                     .catch(err => {
-                        console.log(err)
+                        this.erroreLocales = { message: 'ERROR al consultar, intente nuevamente' }
+                        this.snackbar = true
                     })
                 } catch (error) {
                     console.log(error)

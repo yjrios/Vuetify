@@ -15,19 +15,11 @@ export default new Vuex.Store({
     usuarios: [],
     registro: [],
     token: '',
-    address: 'img/',
+    address: '../photos/',
     autorizado: false
   },
 
   mutations: {
-    showLoanding(state, payload){
-      state.loading.title = payload.title
-      state.loading.title = payload.color
-      state.loading.estado = true
-    },
-    missingLoanding(state){
-      state.loading.estado = false
-    },
     loginUsuario(state, payload){
       if(payload != ''){
         localStorage.setItem('token', payload)
@@ -125,20 +117,19 @@ export default new Vuex.Store({
             }
           })
          .catch(error =>{
-           console.log(error.response.status)
-           if (error.response.status === 400){
+           if (error.response && error.response.status === 400){
            let obj = {
              message:'¡Contraseña Incorrecta!'
             }
             commit('cargarErrores', obj)
             }
-            if (error.response.status === 404){
+            if (error.response && error.response.status === 404){
               let obj = {
                 message:'¡Usuario Incorrecto!'
                }
                commit('cargarErrores', obj)
             }
-            if (error.response.status === 500){
+            if (error.response && error.response.status === 500 || !error.response){
               let obj = {
                 message:'ERROR en el servidor'
               }

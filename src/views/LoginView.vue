@@ -64,7 +64,7 @@
   </v-form>
   </v-container>
 </template>
-
+ 
 <script>
 import { mapActions, mapMutations, mapState } from 'vuex'
 
@@ -84,7 +84,7 @@ export default{
       mode: '',
       timeout: 6000,
       valida: false,
-      email: 'yeison.jesus@gmail.com',
+      email: '',
       contrasenia: '',
       mostrar:false,
       emailRules:[
@@ -110,7 +110,7 @@ export default{
       this.$refs.form.validate()  //########################### BOTON INGRESAR
       if(this.valida){
         await this.iniciarSesion({username: this.email, password: this.contrasenia})
-        if(this.errores.length == 0){
+        if(this.errores.length === 0){
           this.setearopcionmenu('dashboard')
           this.$router.push('/dash')
         }else{

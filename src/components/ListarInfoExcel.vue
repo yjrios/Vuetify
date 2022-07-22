@@ -98,6 +98,23 @@
                 </v-card>
             </v-flex>
         </v-layout>
+        <v-snackbar v-model="snackbar"
+        color="#4CAF50"
+        bottom
+        dark
+        >
+            {{ this.erroreslocales.message }}
+            <template>
+                <v-btn
+                right
+                text
+                dark
+                color="red"
+                @click="snackbar = false">
+                Cerrar
+                </v-btn>
+            </template>
+      </v-snackbar>
     </v-container>
 </template> 
 
@@ -106,6 +123,7 @@ import axios from 'axios'
   export default {
     data () {
       return {
+        snackbar: false,
         erroreslocales: '',
         menu1: null,
         menu2: null,
@@ -137,13 +155,20 @@ import axios from 'axios'
                 const config = { headers: { token: localStorage.getItem('token'), fechas: obj } }
                 await axios.get(process.env.VUE_APP_BASE_URL+'listar', config)
                 .then(resp =>{
-                    this.datos = resp.data
+                    if (resp.data.length !== 0) {
+                        this.datos = resp.data
+                        this.erroreslocales = { message: 'Carga de Datos Exitoso' }
+                        this.snackbar = true
+                    }else{
+                        this.erroreslocales = { message: 'No hay datos para el rango' }
+                        this.snackbar = true
+                    }
                 })
                 .catch(err =>{
-                    this.erroreslocales = 'ERROR al consultar'    
+                    this.erroreslocales = {message: 'ERROR al consultar'}
                 })
             } catch (error) {
-                this.erroreslocales = 'ERROR en el servidor'
+                this.erroreslocales = { message: 'ERROR en el servidor'}
             }
             
 

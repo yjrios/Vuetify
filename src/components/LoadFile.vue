@@ -29,6 +29,23 @@
                 </v-card>
             </v-card>
         </v-dialog>
+        <v-snackbar v-model="snackbar"
+      color="#4CAF50"
+      bottom
+      dark
+      >
+      {{ this.erroreLocales.message }}
+      <template>
+        <v-btn
+        right
+        text
+        dark
+        color="red"
+        @click="listar">
+          Cerrar
+        </v-btn>
+      </template>
+      </v-snackbar>
     </v-form>
 </template>
 
@@ -43,10 +60,13 @@ export default {
 
     data () {
         return {
+            bienMal: false,
+            snackbar: false,
             file: null,
             dialog: true,
             minimo: "2022",
-            maximo: "2023"
+            maximo: "2023",
+            erroreLocales: ''
         }
     },
     methods: {
@@ -64,17 +84,30 @@ export default {
                         data: xlsx
                     }
                     try {
-                        this.axios.post(process.env.VUE_APP_BASE_URL +'cargadedocumento', payload)
+                        axios.post(process.env.VUE_APP_BASE_URL +'cargadedocumento', payload)
                         .then(resp => {
-                            console.log(resp)
+                            this.erroreLocales = { message : 'Registro Exitoso'}
+                            this.snackbar = true
+                            this.bienMal = true
                         })
                         .catch(err => {
-                            console.log(err)
+                            this.erroreLocales = { message : 'ERROR al cargar archivo, intente nuevamente'}
+                            this.snackbar = true
+                            this.bienMal = false
                         })
                     } catch (error) {
                         console.log(error)
-                    } 
+                    }
                 })
+            }
+        },
+        listar () {
+            if (this.bienMal) {
+                this.snackbar = false
+                this.setearopcionmenu('listado')
+                this.$router.push('/dash/listar')
+            }else{
+                this.snackbar = false
             }
         }
     },
